@@ -9,6 +9,7 @@ function App() {
   const [data, setData] = useState({} as any);
 
   const [searchTerm, setSearchTerm] = useState('pokemon');
+  const [yearTerm, setYearTerm] = useState('');
   const [filterTerm, setFilterTerm] = useState('');
 
   useEffect(() => {
@@ -38,7 +39,7 @@ function App() {
         }}
       >
         <TextField value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-
+        <TextField value={yearTerm} onChange={(e) => setYearTerm(e.target.value)} />
         <Select value={filterTerm} label="Age" onChange={handleChange} placeholder="choose">
           <MenuItem value="movie">Movie</MenuItem>
           <MenuItem value="series">Series</MenuItem>
