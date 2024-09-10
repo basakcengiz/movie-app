@@ -89,10 +89,8 @@ const Home = () => {
       state: {
          pagination,
       },
-
       muiTableBodyRowProps: ({ row }) => ({
          onClick: () => {
-            console.log(row);
             const movieId = row.original.imdbID;
             navigate(`/movie-detail/${movieId}`);
          },
@@ -101,6 +99,12 @@ const Home = () => {
          },
       }),
       onPaginationChange: setPagination,
+      muiPaginationProps: {
+         color: 'primary',
+         shape: 'rounded',
+         showRowsPerPage: false,
+         variant: 'outlined',
+      },
    });
 
    return (
