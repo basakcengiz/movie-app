@@ -20,13 +20,13 @@ Live Demo :  https://main--spectacular-dolphin-dc9b24.netlify.app/
 Clone the repository to your local machine:
 
  ```bash
-git clone https://github.com/your-username/movie-search-app.git
+git clone https://github.com/basakcengiz/movie-app.git
 ```
 
 Navigate to the project directory:
 
  ```bash
-cd movie-search-app
+cd movie-app
 ```
 
 Install the dependencies:
@@ -34,9 +34,19 @@ Install the dependencies:
  ```bash
 yarn
 ```
+or
+
+ ```bash
+npm install
+```
 
 Start the development server:
 
  ```bash
 yarn run dev
+```
+or
+
+ ```bash
+npm run dev
 ```
