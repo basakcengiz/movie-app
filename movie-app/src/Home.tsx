@@ -127,7 +127,7 @@ const Home = () => {
                   sx={{
                      '& .MuiOutlinedInput-root': {
                         '&.Mui-focused fieldset': {
-                           borderColor: '#F59E0B',
+                           borderColor: '#4F75FF',
                         },
                      },
                   }}
@@ -143,7 +143,7 @@ const Home = () => {
                   sx={{
                      '& .MuiOutlinedInput-root': {
                         '&.Mui-focused fieldset': {
-                           borderColor: '#F59E0B',
+                           borderColor: '#4F75FF',
                         },
                      },
                   }}
@@ -153,7 +153,7 @@ const Home = () => {
                      id="select-label"
                      sx={{
                         '&.Mui-focused': {
-                           color: '#FF7F3E',
+                           color: '#4F75FF',
                         },
                      }}
                   >
@@ -165,7 +165,7 @@ const Home = () => {
                         fontSize: '14px',
 
                         '&.MuiOutlinedInput-root.Mui-focused': {
-                           '.MuiOutlinedInput-notchedOutline': { border: 1, borderColor: '#FF7F3E' },
+                           '.MuiOutlinedInput-notchedOutline': { border: 1, borderColor: '#4F75FF' },
                         },
                      }}
                      value={searchItem.type}
@@ -184,12 +184,12 @@ const Home = () => {
                   </Select>
                </FormControl>
 
-               <Button type="submit" variant="contained" color="warning" endIcon={<SearchIcon />}>
+               <Button type="submit" variant="contained" color="primary" endIcon={<SearchIcon />}>
                   Search
                </Button>
             </Grid>
          </form>
-         <Grid padding={4}>
+         <Grid sx={{ px: '50px' }}>
             <MaterialReactTable table={table} />
          </Grid>
 
