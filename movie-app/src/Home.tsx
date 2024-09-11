@@ -15,188 +15,188 @@ import SearchIcon from '@mui/icons-material/Search';
 import { searchOptions } from './helpers/arrays';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { data, totalResults } = useAppSelector((state) => state.movie);
+   const navigate = useNavigate();
+   const dispatch = useAppDispatch();
+   const { data, totalResults } = useAppSelector((state) => state.movie);
 
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [searchItem, setSearchItem] = useState({ search: 'Pokemon', year: '', type: '' } as SearchItemType);
+   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+   const [searchItem, setSearchItem] = useState({ search: 'Pokemon', year: '', type: '' } as SearchItemType);
 
-  const fetchMoviesBySearch = async () => {
-    try {
-      /*  const apiKey = import.meta.env.VITE_APP_OMDB_API_KEY; */
+   const fetchMoviesBySearch = async () => {
+      try {
+         const apiKey = import.meta.env.VITE_APP_OMDB_API_KEY;
+         console.log(apiKey);
+         let url = `https://omdbapi.com/?apikey=${apiKey}&s=${searchItem.search}&page=${pagination.pageIndex + 1}`;
+         if (searchItem.year) {
+            url += `&y=${searchItem.year}`;
+         }
+         if (searchItem.type) {
+            url += `&type=${searchItem.type}`;
+         }
+         const response = await axios.get(url);
 
-      let url = `https://omdbapi.com/?apikey=d24aa795&s=${searchItem.search}&page=${pagination.pageIndex + 1}`;
-      if (searchItem.year) {
-        url += `&y=${searchItem.year}`;
+         dispatch(setData(response.data.Search));
+         dispatch(setTotalResults(parseInt(response.data.totalResults)));
+      } catch (error) {
+         console.error('Error fetching data:', error);
       }
-      if (searchItem.type) {
-        url += `&type=${searchItem.type}`;
-      }
-      const response = await axios.get(url);
+   };
 
-      dispatch(setData(response.data.Search));
-      dispatch(setTotalResults(parseInt(response.data.totalResults)));
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+   useEffect(() => {
+      fetchMoviesBySearch();
+   }, [pagination]);
 
-  useEffect(() => {
-    fetchMoviesBySearch();
-  }, [pagination]);
+   const columns = useMemo<MRT_ColumnDef<MovieType>[]>(
+      () => [
+         {
+            accessorKey: 'Title',
+            header: 'Title',
+            size: 150,
+         },
+         {
+            accessorKey: 'Type',
+            header: 'Type',
+            size: 150,
+         },
+         {
+            accessorKey: 'Year',
+            header: 'Year',
+            size: 200,
+         },
+         {
+            accessorKey: 'imdbID',
+            header: 'IMBD ID',
+            size: 150,
+         },
+      ],
+      [],
+   );
 
-  const columns = useMemo<MRT_ColumnDef<MovieType>[]>(
-    () => [
-      {
-        accessorKey: 'Title',
-        header: 'Title',
-        size: 150
+   const table = useMaterialReactTable({
+      columns,
+      data,
+      enableRowSelection: false,
+      enableTopToolbar: false,
+      enableColumnActions: false,
+      enableSorting: false,
+      manualPagination: true,
+      pageCount: Math.ceil(totalResults / 10) - 1,
+      paginationDisplayMode: 'pages',
+      state: {
+         pagination,
       },
-      {
-        accessorKey: 'Type',
-        header: 'Type',
-        size: 150
+      muiTableBodyRowProps: ({ row }) => ({
+         onClick: () => {
+            const movieId = row.original.imdbID;
+            dispatch(clearDetailData());
+            navigate(`/movie-detail/${movieId}`);
+         },
+         style: {
+            cursor: 'pointer',
+         },
+      }),
+      onPaginationChange: setPagination,
+      muiPaginationProps: {
+         color: 'primary',
+         shape: 'rounded',
+         showRowsPerPage: false,
+         variant: 'outlined',
       },
-      {
-        accessorKey: 'Year',
-        header: 'Year',
-        size: 200
-      },
-      {
-        accessorKey: 'imdbID',
-        header: 'IMBD ID',
-        size: 150
-      }
-    ],
-    []
-  );
+   });
 
-  const table = useMaterialReactTable({
-    columns,
-    data,
-    enableRowSelection: false,
-    enableTopToolbar: false,
-    enableColumnActions: false,
-    enableSorting: false,
-    manualPagination: true,
-    pageCount: Math.ceil(totalResults / 10) - 1,
-    paginationDisplayMode: 'pages',
-    state: {
-      pagination
-    },
-    muiTableBodyRowProps: ({ row }) => ({
-      onClick: () => {
-        const movieId = row.original.imdbID;
-        dispatch(clearDetailData());
-        navigate(`/movie-detail/${movieId}`);
-      },
-      style: {
-        cursor: 'pointer'
-      }
-    }),
-    onPaginationChange: setPagination,
-    muiPaginationProps: {
-      color: 'primary',
-      shape: 'rounded',
-      showRowsPerPage: false,
-      variant: 'outlined'
-    }
-  });
-
-  return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (searchItem.search === '') {
-            toast.error('Search field is mandatory');
-            return;
-          }
-          fetchMoviesBySearch();
-        }}
-      >
-        <Grid container spacing={3} justifyContent={'flex-end'} padding={4}>
-          <TextField
-            placeholder="Search by title"
-            value={searchItem.search}
-            onChange={(e) =>
-              setSearchItem((prev: SearchItemType) => {
-                return { ...prev, search: e.target.value };
-              })
-            }
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '&.Mui-focused fieldset': {
-                  borderColor: '#F59E0B'
-                }
-              }
+   return (
+      <>
+         <form
+            onSubmit={(e) => {
+               e.preventDefault();
+               if (searchItem.search === '') {
+                  toast.error('Search field is mandatory');
+                  return;
+               }
+               fetchMoviesBySearch();
             }}
-          />
-          <TextField
-            placeholder="Search by year"
-            value={searchItem.year}
-            onChange={(e) =>
-              setSearchItem((prev: SearchItemType) => {
-                return { ...prev, year: e.target.value };
-              })
-            }
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '&.Mui-focused fieldset': {
-                  borderColor: '#F59E0B'
-                }
-              }
-            }}
-          />
-          <FormControl>
-            <InputLabel
-              id="select-label"
-              sx={{
-                '&.Mui-focused': {
-                  color: '#FF7F3E'
-                }
-              }}
-            >
-              Type
-            </InputLabel>
-            <Select
-              sx={{
-                width: '150px',
-                fontSize: '14px',
+         >
+            <Grid container spacing={3} justifyContent={'flex-end'} padding={4}>
+               <TextField
+                  placeholder="Search by title"
+                  value={searchItem.search}
+                  onChange={(e) =>
+                     setSearchItem((prev: SearchItemType) => {
+                        return { ...prev, search: e.target.value };
+                     })
+                  }
+                  sx={{
+                     '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                           borderColor: '#F59E0B',
+                        },
+                     },
+                  }}
+               />
+               <TextField
+                  placeholder="Search by year"
+                  value={searchItem.year}
+                  onChange={(e) =>
+                     setSearchItem((prev: SearchItemType) => {
+                        return { ...prev, year: e.target.value };
+                     })
+                  }
+                  sx={{
+                     '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                           borderColor: '#F59E0B',
+                        },
+                     },
+                  }}
+               />
+               <FormControl>
+                  <InputLabel
+                     id="select-label"
+                     sx={{
+                        '&.Mui-focused': {
+                           color: '#FF7F3E',
+                        },
+                     }}
+                  >
+                     Type
+                  </InputLabel>
+                  <Select
+                     sx={{
+                        width: '150px',
+                        fontSize: '14px',
 
-                '&.MuiOutlinedInput-root.Mui-focused': {
-                  '.MuiOutlinedInput-notchedOutline': { border: 1, borderColor: '#FF7F3E' }
-                }
-              }}
-              value={searchItem.type}
-              onChange={(e: SelectChangeEvent) =>
-                setSearchItem((prev: SearchItemType) => {
-                  return { ...prev, type: e.target.value };
-                })
-              }
-              label="Type"
-            >
-              {searchOptions.map((option: SearchOptionType) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                        '&.MuiOutlinedInput-root.Mui-focused': {
+                           '.MuiOutlinedInput-notchedOutline': { border: 1, borderColor: '#FF7F3E' },
+                        },
+                     }}
+                     value={searchItem.type}
+                     onChange={(e: SelectChangeEvent) =>
+                        setSearchItem((prev: SearchItemType) => {
+                           return { ...prev, type: e.target.value };
+                        })
+                     }
+                     label="Type"
+                  >
+                     {searchOptions.map((option: SearchOptionType) => (
+                        <MenuItem key={option.value} value={option.value}>
+                           {option.label}
+                        </MenuItem>
+                     ))}
+                  </Select>
+               </FormControl>
 
-          <Button type="submit" variant="contained" color="warning" endIcon={<SearchIcon />}>
-            Search
-          </Button>
-        </Grid>
-      </form>
-      <Grid padding={4}>
-        <MaterialReactTable table={table} />
-      </Grid>
+               <Button type="submit" variant="contained" color="warning" endIcon={<SearchIcon />}>
+                  Search
+               </Button>
+            </Grid>
+         </form>
+         <Grid padding={4}>
+            <MaterialReactTable table={table} />
+         </Grid>
 
-      <Toaster />
-    </>
-  );
+         <Toaster />
+      </>
+   );
 };
 
 export default Home;
