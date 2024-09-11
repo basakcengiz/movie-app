@@ -26,7 +26,7 @@ git clone https://github.com/your-username/movie-search-app.git
 Navigate to the project directory:
 
  ```bash
-cd movie-search-app
+cd movie-app
 ```
 
 Install the dependencies:
