@@ -32,11 +32,21 @@ cd movie-app
 Install the dependencies:
 
  ```bash
-yarn   or   npm install
+yarn
+```
+or
+
+ ```bash
+npm install
 ```
 
 Start the development server:
 
  ```bash
-yarn run dev   or   npm run dev
+yarn run dev
+```
+or
+
+ ```bash
+npm run dev
 ```
