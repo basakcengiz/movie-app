@@ -20,7 +20,7 @@ Live Demo :  https://main--spectacular-dolphin-dc9b24.netlify.app/
 Clone the repository to your local machine:
 
  ```bash
-git clone https://github.com/your-username/movie-search-app.git
+git clone https://github.com/basakcengiz/movie-app.git
 ```
 
 Navigate to the project directory:
