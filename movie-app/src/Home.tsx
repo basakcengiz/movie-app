@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 
 import './App.css';
 import axios from 'axios';
-import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TableRowProps, TextField } from '@mui/material';
 import toast, { Toaster } from 'react-hot-toast';
 import { MRT_ColumnDef, useMaterialReactTable, MaterialReactTable } from 'material-react-table';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 
 import { MovieType, SearchItemType, SearchOptionType } from './helpers/type';
@@ -17,11 +17,16 @@ import { searchOptions } from './helpers/arrays';
 const Home = () => {
    const navigate = useNavigate();
    const dispatch = useAppDispatch();
+   const location = useLocation();
    const { data, totalResults } = useAppSelector((state) => state.movie);
 
    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-   const [searchItem, setSearchItem] = useState({ search: 'Pokemon', year: '', type: '' } as SearchItemType);
-
+   const [searchItem, setSearchItem] = useState({
+      search: location.state && location.state.searchItem ? location.state.searchItem : 'Pokemon',
+      year: '',
+      type: '',
+   } as SearchItemType);
+   console.log(location);
    const fetchMoviesBySearch = async () => {
       try {
          const apiKey = import.meta.env.VITE_APP_OMDB_API_KEY;
@@ -34,16 +39,23 @@ const Home = () => {
          }
          const response = await axios.get(url);
 
+         if (response.data.Response === 'False') {
+            dispatch(setData([]));
+            dispatch(setTotalResults(0));
+            toast.error(`Error fetching data: ${response.data.Error}`);
+            return;
+         }
+
          dispatch(setData(response.data.Search));
          dispatch(setTotalResults(parseInt(response.data.totalResults)));
       } catch (error) {
-         console.error('Error fetching data:', error);
+         toast.error(`Error fetching data: ${error}`);
       }
    };
 
    useEffect(() => {
       fetchMoviesBySearch();
-   }, [pagination]);
+   }, [pagination.pageIndex]);
 
    const columns = useMemo<MRT_ColumnDef<MovieType>[]>(
       () => [
@@ -84,16 +96,17 @@ const Home = () => {
       state: {
          pagination,
       },
-      muiTableBodyRowProps: ({ row }) => ({
-         onClick: () => {
-            const movieId = row.original.imdbID;
-            dispatch(clearDetailData());
-            navigate(`/movie-detail/${movieId}`);
-         },
-         style: {
-            cursor: 'pointer',
-         },
-      }),
+      muiTableBodyRowProps: ({ row }) =>
+         ({
+            onClick: () => {
+               const movieId = row.original.imdbID;
+               dispatch(clearDetailData());
+               navigate(`/movie-detail/${movieId}`, { state: { searchItem: searchItem.search } });
+            },
+            style: {
+               cursor: 'pointer',
+            },
+         } as TableRowProps),
       onPaginationChange: setPagination,
       muiPaginationProps: {
          color: 'primary',

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { setDetailData } from './store/slice/movieSlice';
 import { useAppDispatch, useAppSelector } from './hooks/hook';
 import Grid from '@mui/material/Grid2';
@@ -11,8 +11,9 @@ const Detail = () => {
    const { movieId } = useParams();
    const navigate = useNavigate();
    const dispatch = useAppDispatch();
+   const location = useLocation();
    const { detailData } = useAppSelector((state) => state.movie);
-
+   console.log(location);
    const fetchMovieDetail = async () => {
       try {
          const url = `https://omdbapi.com/?apikey=d24aa795&i=${movieId}`;
@@ -26,7 +27,7 @@ const Detail = () => {
    useEffect(() => {
       fetchMovieDetail();
    }, []);
-   console.log(detailData);
+
    return (
       <>
          <Button
@@ -34,7 +35,7 @@ const Detail = () => {
             sx={{ margin: '10px' }}
             startIcon={<ArrowBackIcon />}
             onClick={() => {
-               navigate('/');
+               navigate('/', { state: location.state });
             }}
          >
             Go Back
