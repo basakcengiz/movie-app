@@ -25,7 +25,6 @@ const Home = () => {
    const fetchMoviesBySearch = async () => {
       try {
          const apiKey = import.meta.env.VITE_APP_OMDB_API_KEY;
-         console.log(apiKey);
          let url = `https://omdbapi.com/?apikey=${apiKey}&s=${searchItem.search}&page=${pagination.pageIndex + 1}`;
          if (searchItem.year) {
             url += `&y=${searchItem.year}`;
