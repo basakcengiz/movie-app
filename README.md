@@ -1,6 +1,8 @@
 # Movie Search App
 This project is a movie search application that allows users to search for movies by title, year, and type using the OMDB API. The search results are displayed in a table with pagination, and users can view detailed information about each movie.
 
+Live Demo :  https://main--spectacular-dolphin-dc9b24.netlify.app/ 
+
 ### Technologies Used
 
 - React: Frontend library for building user interface.
