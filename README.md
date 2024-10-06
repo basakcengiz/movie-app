@@ -50,3 +50,4 @@ or
  ```bash
 npm run dev
 ```
+<img width="1433" alt="image" src="https://github.com/user-attachments/assets/ea12393a-0cc4-4dad-a881-e584b377e7f2">
